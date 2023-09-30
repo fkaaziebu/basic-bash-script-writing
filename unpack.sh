@@ -30,6 +30,7 @@ unpack_file() {
     # Unpacking files with .zip extension
     if [ "${1##*.}" == "zip" ]; then
         echo "Name_suffix ${1%.*}-${1##*.}"
+        num=$((num + 1))
         if [ "$verbose" = true ]; then
             unzip $1 -d $2
         else
@@ -38,6 +39,7 @@ unpack_file() {
     
     # Unpacking files with .gz extension
     elif [ "${1##*.}" == "gz" ]; then
+        num=$((num + 1))
         if [ "$verbose" = true ]; then
             gunzip -v -c $1 > "$2/${1%.*}"
         else
@@ -46,6 +48,7 @@ unpack_file() {
 
     # Unpacking files with .bz2 extension
     elif [ "${1##*.}" == "bz2" ]; then
+        num=$((num + 1))
         if [ "$verbose" = true ]; then
             bunzip2 -v -c $1 > "$2/${1%.*}"
         else
@@ -54,6 +57,7 @@ unpack_file() {
         
     # Unpacking files with .cmpr extension
     elif [ "${1##*.}" == "cmpr" ]; then
+        num=$((num + 1))
         if [ "$verbose" = true ]; then
             gunzip -v -c $1 > "$2/${1%.*}"
         else
@@ -74,6 +78,8 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+num = 0
+
 decompress() {
     for file in "${files[@]}"; do
         if [ -d "${file%.*}-${file##*.}" ]; then
@@ -86,6 +92,7 @@ decompress() {
         echo "This file is been processed: $file"
         unpack_file "$file" ${file%.*}-${file##*.}
     done
+    echo "Decompressed $num archive(s)"
 }
 
 decompress
